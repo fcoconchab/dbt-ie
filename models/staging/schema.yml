@@ -1,0 +1,128 @@
+version: 2
+
+models:
+
+  - name: stg_categories
+    description: "Cleaned product categories from raw source."
+    columns:
+      - name: category_id
+        description: "Primary key — unique identifier for each category."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_customer_addresses
+    description: "Cleaned customer address records."
+    columns:
+      - name: address_id
+        description: "Primary key — unique identifier for each address."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_customers
+    description: "Cleaned customer records from raw source."
+    columns:
+      - name: customer_id
+        description: "Primary key — unique identifier for each customer."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_inventory
+    description: "Cleaned inventory records. One row per product per warehouse."
+    columns:
+      - name: product_id
+        description: "Not unique alone — grain is product_id + warehouse."
+        tests:
+          - not_null
+
+  - name: stg_marketing_campaigns
+    description: "Cleaned marketing campaign data."
+    columns:
+      - name: campaign_id
+        description: "Primary key — unique identifier for each campaign."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_items
+    description: "Cleaned line-item records for each order."
+    columns:
+      - name: order_item_id
+        description: "Primary key — unique identifier for each order line item."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    description: "Cleaned order header records."
+    columns:
+      - name: order_id
+        description: "Primary key — unique identifier for each order."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_payments
+    description: "Cleaned payment transaction records."
+    columns:
+      - name: payment_id
+        description: "Primary key — unique string identifier for each payment."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    description: "Cleaned product catalog data."
+    columns:
+      - name: product_id
+        description: "Primary key — unique identifier for each product."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_returns
+    description: "Cleaned product return records."
+    columns:
+      - name: return_id
+        description: "Primary key — unique identifier for each return."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_reviews
+    description: "Cleaned customer review records."
+    columns:
+      - name: review_id
+        description: "Primary key — unique identifier for each review."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_shipping
+    description: "Cleaned shipment records. One row per order."
+    columns:
+      - name: order_id
+        description: "Primary key — one shipment record per order."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_suppliers
+    description: "Cleaned supplier data."
+    columns:
+      - name: supplier_id
+        description: "Primary key — unique identifier for each supplier."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_website_sessions
+    description: "Cleaned website session records."
+    columns:
+      - name: session_id
+        description: "Primary key — unique string identifier for each web session."
+        tests:
+          - unique
+          - not_null
