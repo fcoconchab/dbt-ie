@@ -14,6 +14,7 @@ dependencies = [
     "pyarrow",
     "sqlfluff",
     "sqlfluff-templater-dbt",
+    "pandas>=2.3.3",
 ]
 
 [tool.uv]

@@ -1,0 +1,55 @@
+version: 2
+
+models:
+
+  - name: mart_orders
+    description: "One row per order with all order, item, and shipping metrics."
+    columns:
+      - name: order_id
+        description: "Primary key — unique identifier for each order."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Foreign key to stg_customers."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
+  - name: mart_revenue_by_segment
+    description: "Revenue aggregated by customer segment."
+    columns:
+      - name: customer_segment
+        description: "Primary key — one row per segment."
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_product_performance
+    description: "Sales performance aggregated by product."
+    columns:
+      - name: product_id
+        description: "Primary key — one row per product."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_customers
+    description: "Customer dimension with segment enrichment."
+    columns:
+      - name: customer_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Product dimension with category name."
+    columns:
+      - name: product_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
