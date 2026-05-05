@@ -1,0 +1,20 @@
+version: 2
+
+models:
+
+  - name: int_orders_enriched
+    description: "Orders joined with customer segment and country. One row per order."
+    columns:
+      - name: order_id
+        description: "Primary key — unique per order."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Foreign key to stg_customers."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+              
