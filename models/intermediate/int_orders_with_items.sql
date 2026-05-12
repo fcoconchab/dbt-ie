@@ -1,8 +1,20 @@
 -- Grain: one row per order_id
--- Business question: For each order, what are its core order details and what item-level revenue metrics does it have?
--- Purpose: Combine base order data from stg_orders with order-level item metrics from int_order_items_summary
---          to form a single order table that knows whether it has items, how many, and the associated gross/net revenue;
---          this becomes the main order backbone for further enrichment.
+-- Business question: For each order, what are its core details and what item-level revenue
+--                    metrics does it have?
+-- Purpose: Combine order header data from stg_orders with the aggregated item metrics from
+--          int_order_items_summary to form a single order record that knows whether it has
+--          items, how many, and the associated revenue.
+--
+-- stg_orders drives the join. Every order shows up in the output even if it has no items yet,
+-- which is safer than an inner join that would silently drop those orders. has_order_items
+-- flags orders with no matching item records so downstream models can handle them explicitly
+-- rather than relying on null checks across multiple columns.
+--
+-- subtotal is the order value before tax and shipping. total_amount is what the customer
+-- actually paid once everything is added. net_item_revenue is what you get by adding up the
+-- individual line items from stg_order_items. They come from different places and will not
+-- always match exactly. revenue_variance makes that gap visible and queryable so data quality
+-- issues do not go unnoticed.
 
 with orders as (
     select
@@ -52,7 +64,8 @@ merged as (
         order_items_summary.total_quantity,
         order_items_summary.gross_item_revenue,
         order_items_summary.total_item_discount_amount,
-        order_items_summary.net_item_revenue
+        order_items_summary.net_item_revenue,
+        orders.subtotal - coalesce(order_items_summary.net_item_revenue, 0) as revenue_variance
     from orders
     left join order_items_summary using (order_id)
 )
@@ -74,5 +87,6 @@ select
     total_quantity,
     gross_item_revenue,
     total_item_discount_amount,
-    net_item_revenue
+    net_item_revenue,
+    revenue_variance
 from merged
