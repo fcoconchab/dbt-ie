@@ -1,3 +1,6 @@
+-- Grain: one row per order_id
+-- Purpose: Final order-level mart combining orders, item metrics, and shipping for reporting.
+
 with orders as (
     select
         order_id,
@@ -16,9 +19,9 @@ with orders as (
 order_items_summary as (
     select
         order_id,
-        n_items,
+        order_item_count,
         total_quantity,
-        total_items_price
+        net_item_revenue
     from {{ ref('int_order_items_summary') }}
 ),
 
@@ -33,7 +36,7 @@ order_shipping as (
         shipping_status,
         days_to_ship,
         is_late
-    from {{ ref('int_order_shipping') }}
+    from {{ ref('int_order_shipping_status') }}
 ),
 
 final as (
@@ -48,9 +51,9 @@ final as (
         orders.discount_amount,
         orders.total_amount,
         orders.payment_method,
-        order_items_summary.n_items,
+        order_items_summary.order_item_count,
         order_items_summary.total_quantity,
-        order_items_summary.total_items_price,
+        order_items_summary.net_item_revenue,
         order_shipping.ship_date,
         order_shipping.estimated_delivery,
         order_shipping.actual_delivery,

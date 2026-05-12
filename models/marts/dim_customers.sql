@@ -3,11 +3,23 @@ with customers as (
         customer_id,
         first_name,
         last_name,
+        full_name,
         email,
+        email_domain,
         country,
         customer_segment,
         segment_id
-    from {{ ref('int_customers') }}
+    from {{ ref('int_customers_enriched') }}
 )
 
-select * from customers
+select
+    customer_id,
+    first_name,
+    last_name,
+    full_name,
+    email,
+    email_domain,
+    country,
+    customer_segment,
+    segment_id
+from customers
