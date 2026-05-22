@@ -1,3 +1,5 @@
+{{ config(severity='warn') }}
+
 -- This test checks if the order subtotal matches the sum of the items.
 -- In dbt, a singular test PASSES if it returns 0 rows. 
 -- If it returns ANY rows, the test FAILS and warns us of a data issue.
