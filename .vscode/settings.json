@@ -1,0 +1,17 @@
+{
+  "dbt.profilesDirOverride": "${workspaceFolder}",
+  "terminal.integrated.env.osx": {
+    "DBT_PROFILES_DIR": "${workspaceFolder}"
+  },
+  "terminal.integrated.env.linux": {
+    "DBT_PROFILES_DIR": "${workspaceFolder}"
+  },
+  "terminal.integrated.env.windows": {
+    "DBT_PROFILES_DIR": "${workspaceFolder}"
+  },
+  "files.associations": {
+    "*.sql": "jinja-sql",
+    "*.mmd": "mermaid"
+  },
+  "dbt.perspectiveTheme": "Vintage"
+}
