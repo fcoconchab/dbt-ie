@@ -1,6 +1,31 @@
 version: 2
 
 models:
+  - name: dim_customers
+    description: "Customer dimension with segment enrichment."
+    columns:
+      - name: customer_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+      - name: email
+        tests:
+          - unique
+          - not_null
+      - name: customer_segment
+        tests:
+          - accepted_values:
+              values: ['Bronze', 'Silver', 'Gold', 'Platinum']
+
+  - name: dim_products
+    description: "Product dimension with category name."
+    columns:
+      - name: product_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
 
   - name: mart_orders
     description: "One row per order with all order, item, and shipping metrics."
@@ -11,12 +36,16 @@ models:
           - unique
           - not_null
       - name: customer_id
-        description: "Foreign key to stg_customers."
+        description: "Foreign key to dim_customers."
         tests:
           - not_null
           - relationships:
-              to: ref('stg_customers')
+              to: ref('dim_customers')
               field: customer_id
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['pending', 'shipped', 'completed', 'cancelled', 'refunded']
 
   - name: mart_revenue_by_segment
     description: "Revenue aggregated by customer segment."
@@ -36,20 +65,70 @@ models:
           - unique
           - not_null
 
-  - name: dim_customers
-    description: "Customer dimension with segment enrichment."
+  - name: mart_customer_rfm
     columns:
       - name: customer_id
-        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+      - name: segment
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['champion', 'loyal', 'at_risk', 'lost']
+      - name: rfm_score
+        tests:
+          - not_null
+          - is_positive
+      - name: recency_days
+        tests:
+          - not_null
+          - is_positive
+      - name: monetary
+        tests:
+          - is_positive
+
+  - name: mart_product_review_summary
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+      - name: review_tier
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['well_reviewed', 'mixed', 'poorly_reviewed']
+      - name: avg_rating
+        tests:
+          - not_null
+
+  - name: mart_payment_method_breakdown
+    columns:
+      - name: customer_id
         tests:
           - unique
           - not_null
 
-  - name: dim_products
-    description: "Product dimension with category name."
+  - name: mart_monthly_revenue
     columns:
-      - name: product_id
-        description: "Primary key."
+      - name: order_month
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_shipping_performance
+    columns:
+      - name: carrier
+        tests:
+          - not_null
+      - name: on_time_rate
+        tests:
+          - not_null
+
+  - name: mart_repeat_customers
+    columns:
+      - name: customer_id
         tests:
           - unique
           - not_null

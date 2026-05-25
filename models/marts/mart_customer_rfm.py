@@ -63,6 +63,7 @@ def model(dbt, session):
             return "lost"
 
     rfm["segment"] = rfm["rfm_score"].apply(classify_segment)
+    rfm["segment"] = rfm["segment"].astype(object)  # Fix: DuckDB requires explicit object dtype for string columns
 
     return rfm[[
         "customer_id",

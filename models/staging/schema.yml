@@ -1,7 +1,6 @@
 version: 2
 
 models:
-
   - name: stg_categories
     description: "Cleaned product categories from raw source."
     columns:
@@ -28,6 +27,14 @@ models:
         tests:
           - unique
           - not_null
+      - name: email
+        tests:
+          - unique
+          - not_null
+      - name: customer_segment
+        tests:
+          - accepted_values:
+              values: ['Bronze', 'Silver', 'Gold', 'Platinum']
 
   - name: stg_inventory
     description: "Cleaned inventory records. One row per product per warehouse."
@@ -54,6 +61,18 @@ models:
         tests:
           - unique
           - not_null
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: product_id
+        tests:
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
 
   - name: stg_orders
     description: "Cleaned order header records."
@@ -63,6 +82,19 @@ models:
         tests:
           - unique
           - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pending', 'shipped', 'completed', 'cancelled', 'refunded']
+      - name: total_amount
+        tests:
+          - not_null
+          - is_positive:
+              where: "status in ('completed', 'shipped')"
 
   - name: stg_payments
     description: "Cleaned payment transaction records."
@@ -72,6 +104,17 @@ models:
         tests:
           - unique
           - not_null
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['completed', 'pending', 'failed', 'refunded']
 
   - name: stg_products
     description: "Cleaned product catalog data."
@@ -81,6 +124,10 @@ models:
         tests:
           - unique
           - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['active', 'discontinued', 'out_of_stock']
 
   - name: stg_returns
     description: "Cleaned product return records."
@@ -90,6 +137,16 @@ models:
         tests:
           - unique
           - not_null
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: return_status
+        tests:
+          - accepted_values:
+              values: ['pending', 'approved', 'rejected', 'processed']
 
   - name: stg_reviews
     description: "Cleaned customer review records."
@@ -99,6 +156,20 @@ models:
         tests:
           - unique
           - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: product_id
+        tests:
+          - not_null
+      - name: rating
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
 
   - name: stg_shipping
     description: "Cleaned shipment records. One row per order."
@@ -108,6 +179,13 @@ models:
         tests:
           - unique
           - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: shipping_status
+        tests:
+          - accepted_values:
+              values: ['pending', 'shipped', 'in_transit', 'delivered', 'returned']
 
   - name: stg_suppliers
     description: "Cleaned supplier data."
