@@ -1,0 +1,54 @@
+version: 2
+
+models:
+
+  # ============================================================
+  # TESTS FOR: mart_revenue_tiers
+  # ============================================================
+  - name: mart_revenue_tiers
+    columns:
+
+      - name: order_id
+        tests:
+          - unique        # no order should appear twice
+          - not_null      # every row must have an order_id
+
+      - name: revenue_tier
+        tests:
+          - not_null      # every order must be classified
+          - accepted_values:
+              values: ['low', 'medium', 'high']   # no other values allowed
+
+      - name: revenue_tier_strict
+        tests:
+          - not_null      # every order must also have a strict classification
+          - accepted_values:
+              values: ['low', 'medium', 'high']   # same valid values
+
+      - name: total_amount
+        tests:
+          - not_null      # every order must have an amount
+
+  # ============================================================
+  # TESTS FOR: mart_channel_performance
+  # ============================================================
+  - name: mart_channel_performance
+    columns:
+
+      - name: source
+        tests:
+          - not_null      # every row must have a traffic source
+
+      - name: device_type
+        tests:
+          - not_null      # every row must have a device type
+
+      - name: conversion_rate
+        tests:
+          - not_null      # every row must have a conversion rate
+
+      - name: channel_quality
+        tests:
+          - not_null      # every row must be classified
+          - accepted_values:
+              values: ['high_performing', 'average', 'low_performing']
