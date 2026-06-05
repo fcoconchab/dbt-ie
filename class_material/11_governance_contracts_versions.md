@@ -8,7 +8,7 @@ author:
   - name: Daniel Garcia
   - email: dgarciah@faculty.ie.edu
   - url: www.linkedin.com/in/dgarhdez
-header: '<img src="../img/ie_logo.png" width="90"><span>Analytics Engineering &middot; dgarciah@faculty.ie.edu</span>'
+header: '<img src="../img/ie_logo.png" width="60"><span>Session 11 &mdash; Contracts, Versions &amp; Access &middot; <a href="mailto:dgarciah@faculty.ie.edu">dgarciah@faculty.ie.edu</a></span>'
 ---
 
 <!-- _class: lead -->

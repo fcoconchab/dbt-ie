@@ -36,6 +36,12 @@ sqlfluff fix models/        # Auto-fix SQL files
 # Slide decks — convert a Marp markdown file to PDF (images in ../img/ are referenced with relative paths)
 npx --yes @marp-team/marp-cli class_material/<file>.md --pdf --allow-local-files
 # Example: npx --yes @marp-team/marp-cli class_material/01_intro_ae_dbt_structure.md --pdf --allow-local-files
+
+# Diagrams — Mermaid sources live in img/diagrams/*.mmd and render to sibling *.svg files.
+./render_diagrams.sh              # re-render every .mmd in img/diagrams/
+./render_diagrams.sh layers       # re-render one (matches basename without .mmd)
+# Reference in slides as:  ![center w:1100](../img/diagrams/<name>.svg)
+# Always re-render diagrams before rebuilding PDFs if the .mmd source changed.
 ```
 
 ## Architecture
@@ -54,7 +60,7 @@ Each layer has a `docs/` subdirectory with YAML files containing column descript
 - **SQL style**: lowercase keywords, identifiers, functions, literals (enforced by `.sqlfluff`)
 - **Naming**: `stg_[table]`, `int_[descriptive]`, `dim_[entity]`, `mart_[metric]`
 - **Materialization**: staging = views, marts = tables (configured in `dbt_project.yml`)
-- **dbt profile**: located at `.dbt/profiles.yml` (not the default `~/.dbt/`), adapter is `duckdb`, database file is `my_database.duckdb`
+- **dbt profile**: located at `profiles.yml` in the project root. dbt 1.5+ finds it automatically when commands are run from the project directory, overriding any global `~/.dbt/profiles.yml`. Adapter is `duckdb`, database file is `my_database.duckdb`.
 - **Packages**: dbt_utils, codegen, dbt_expectations (see `packages.yml`)
 
 ## Course Materials
